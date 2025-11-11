@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: Wiza backend
+  threads:
+    virtual:
+      enabled: true
+  data:
+    mongodb:
+      host: ${DB_HOST}
+      port: ${DB_PORT}
+      database: ${DB_NAME}
+      username: ${DB_USER}
+      password: ${DB_PWD}
+      authentication-database: admin
+
+security:
+  jwt:
+    issuer: Wiza
+    secret-key: FSmFQ0tNPt79eHKSiuaxu0Kwtie6El27XyVCPwTvlFU
+    token-expiry-time-in-seconds: 86400
+    refresh-expiry-time-in-seconds: 259200
+
+logging:
+  level:
+    root: debug
+
+wiza:
+  services:
+    sms:
+      api-key: ${SMS_API_KEY}
+      host: ${SMS_HOST}
