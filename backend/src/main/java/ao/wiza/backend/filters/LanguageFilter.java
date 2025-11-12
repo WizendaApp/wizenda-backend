@@ -14,13 +14,16 @@ import static ao.wiza.backend.filters.LanguageFilter.LanguageContext.LANG;
 
 public class LanguageFilter extends OncePerRequestFilter {
 
+
   @Override
   protected void doFilterInternal(@NonNull HttpServletRequest request,
                                   @NonNull HttpServletResponse response,
-                                  @NonNull FilterChain filterChain) throws ServletException, IOException {
-
-
-    var lang = Optional.ofNullable(request.getHeader("Accept-Language")).orElse("pt");
+                                  @NonNull FilterChain filterChain) {
+    var lang = Optional.ofNullable(request.getHeader("Accept-Language"))
+        .map(LanguageFilter::transform)
+        .orElse("pt")
+        .substring(0, 2)
+        .trim();
 
     ScopedValue.where(LANG, lang).run(() -> {
       try {
@@ -30,6 +33,14 @@ public class LanguageFilter extends OncePerRequestFilter {
       }
     });
 
+  }
+
+  private static String transform(String s) {
+    if (s.length() > 1) {
+      return s;
+    }
+
+    return s + " ".repeat(3);
   }
 
   public static class LanguageContext {

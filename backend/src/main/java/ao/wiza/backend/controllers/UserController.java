@@ -1,5 +1,6 @@
 package ao.wiza.backend.controllers;
 
+import ao.wiza.backend.controllers.docs.UserControllerDocs;
 import ao.wiza.backend.dto.*;
 import ao.wiza.backend.services.AuthService;
 import ao.wiza.backend.services.UserService;
@@ -17,7 +18,7 @@ import static java.util.Optional.ofNullable;
 @RequestMapping("/api/v1/users")
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDocs {
   private final UserService service;
   private final AuthService authService;
 
@@ -39,11 +40,17 @@ public class UserController {
 
     var user = service.getByUsername(username);
 
-    return ResponseEntity.ok(new GetMeResponse());
+    return ResponseEntity.ok(new GetMeResponse(
+        user.getUsername(),
+        user.getName(),
+        user.getImageUrl(),
+        user.getEmail(),
+        user.getPhone()
+    ));
   }
 
   @PostMapping("verify")
-  public ResponseEntity<?> verifyUser(@Valid @RequestBody VerifyUserRequest request) {
+  public ResponseEntity<@NonNull Void> verifyUser(@Valid @RequestBody VerifyUserRequest request) {
     var user = service.verifyUser(request);
 
     var createTokenRequest = new CreateTokenRequest(user.getUsername(), user.getRole());
@@ -51,9 +58,17 @@ public class UserController {
     var token = authService.createToken(createTokenRequest);
     var refreshToken = authService.createRefreshToken(createTokenRequest);
 
-    return ResponseEntity.ok()
+    return ResponseEntity.noContent()
         .header("accessToken", token)
         .header("refreshToken", refreshToken)
-        .body(new VerifyUserResponse());
+        .build();
+  }
+
+  @PostMapping("verify/resend")
+  public ResponseEntity<@NonNull Void> resendVerifyToken(@Valid @RequestBody ResendVerifyTokenRequest request) {
+
+    service.resendVerifyToken(request);
+
+    return ResponseEntity.noContent().build();
   }
 }

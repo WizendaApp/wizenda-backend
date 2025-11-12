@@ -2,11 +2,11 @@ package ao.wiza.backend.events.consumers;
 
 import ao.wiza.backend.events.SendNotificationEvent;
 import ao.wiza.backend.events.UserCreatedEvent;
+import ao.wiza.backend.events.producers.EventProducer;
 import ao.wiza.backend.exceptions.ResourceNotFoundException;
 import ao.wiza.backend.models.UserVerification;
 import ao.wiza.backend.repository.UserRepository;
 import ao.wiza.backend.repository.UserVerificationRepository;
-import ao.wiza.backend.services.EventService;
 import ao.wiza.backend.utils.RandomUtils;
 import ao.wiza.backend.utils.TranslationUtils;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserEventConsumer {
   private final UserVerificationRepository userVerificationRepository;
   private final UserRepository userRepository;
   private final TranslationUtils translator;
-  private final EventService eventService;
+  private final EventProducer eventProducer;
 
   @Async("virtualThreadsAsyncExecutor")
   @EventListener
@@ -64,6 +64,6 @@ public class UserEventConsumer {
         SMS
     );
 
-    eventService.publish(notification);
+    eventProducer.publish(notification);
   }
 }

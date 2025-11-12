@@ -20,14 +20,12 @@ public class User {
   private String email;
   @Indexed(unique = true)
   private String username;
+  private String imageUrl;
   @Indexed(unique = true)
   private String phone;
   private String password;
-
   private Role role;
-
   private boolean isActive;
-
   @CreatedDate
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

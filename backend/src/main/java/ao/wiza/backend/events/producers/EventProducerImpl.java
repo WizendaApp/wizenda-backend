@@ -1,7 +1,6 @@
-package ao.wiza.backend.services.impl;
+package ao.wiza.backend.events.producers;
 
 import ao.wiza.backend.events.Event;
-import ao.wiza.backend.services.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EventServiceImpl implements EventService {
+public class EventProducerImpl implements EventProducer {
   private final ApplicationEventPublisher publisher;
 
   @Async("virtualThreadsAsyncExecutor")

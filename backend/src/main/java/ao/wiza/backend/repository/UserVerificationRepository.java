@@ -15,4 +15,7 @@ public interface UserVerificationRepository extends MongoRepository<@NonNull Use
 
   @Query("{ 'user': ObjectId(?0), 'code': ?1, 'isActive': true }")
   @Nullable UserVerification findValidCode(@NonNull String user, @NonNull String code);
+
+  @Query("{ 'user': ObjectId(?0), 'isActive': true }")
+  @Nullable UserVerification findValidCode(@NonNull String user);
 }

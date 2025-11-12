@@ -2,14 +2,17 @@ package ao.wiza.backend.services.impl;
 
 import ao.wiza.backend.dto.CreateUserRequest;
 import ao.wiza.backend.dto.CreateUserResponse;
+import ao.wiza.backend.dto.ResendVerifyTokenRequest;
 import ao.wiza.backend.dto.VerifyUserRequest;
+import ao.wiza.backend.events.SendNotificationEvent;
 import ao.wiza.backend.events.UserCreatedEvent;
 import ao.wiza.backend.exceptions.ResourceNotFoundException;
 import ao.wiza.backend.models.User;
 import ao.wiza.backend.repository.UserRepository;
 import ao.wiza.backend.repository.UserVerificationRepository;
-import ao.wiza.backend.services.EventService;
+import ao.wiza.backend.events.producers.EventProducer;
 import ao.wiza.backend.services.UserService;
+import ao.wiza.backend.utils.TranslationUtils;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 import static ao.wiza.backend.filters.LanguageFilter.LanguageContext.LANG;
+import static ao.wiza.backend.models.NotificationType.SMS;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +29,8 @@ public class UserServiceImpl implements UserService {
   private final UserRepository repository;
   private final UserVerificationRepository uVerifyRepository;
   private final PasswordEncoder passwordEncoder;
-  private final EventService publisher;
+  private final EventProducer publisher;
+  private final TranslationUtils translator;
 
   @Override
   public @NonNull CreateUserResponse create(@NonNull CreateUserRequest request) {
@@ -85,5 +90,35 @@ public class UserServiceImpl implements UserService {
     repository.save(user);
 
     return user;
+  }
+
+  @Override
+  public void resendVerifyToken(@NonNull ResendVerifyTokenRequest request) {
+    var user = repository.findByUsernameOrEmail(request.username());
+
+    if (user == null) {
+      throw new ResourceNotFoundException("User not found");
+    }
+
+    if (user.isActive()) {
+      throw new IllegalStateException("User is alright verified");
+    }
+
+    var verification = uVerifyRepository.findValidCode(user.getId());
+
+    if (verification == null) {
+      throw new ResourceNotFoundException("error");
+    }
+
+    var lang = LANG.get();
+
+    publisher.publish(new SendNotificationEvent(
+        "",
+        user.getPhone(),
+        translator.translate("user.confirmation.subtitle", lang),
+        translator.translate("user.confirmation.message", lang, user.getUsername(), verification.getCode()),
+        lang,
+        SMS
+    ));
   }
 }
