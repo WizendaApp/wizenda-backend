@@ -42,7 +42,5 @@ USER spring:spring
 ENV PORT=8080
 EXPOSE ${PORT}
 
-ENV
-
 ENTRYPOINT ["java", "-jar", "application.jar"]
 CMD ["--server.port=${PORT}"]

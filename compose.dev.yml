@@ -9,6 +9,8 @@ services:
     container_name: wizenda-backend
     env_file:
       - .env.example
+    depends_on:
+      - mongo
   mongo:
     image: 'mongo:latest'
     environment:
