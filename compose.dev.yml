@@ -6,6 +6,8 @@ services:
     networks:
       - mongo_network
       - redis_network
+    ports:
+      - '8080'
     container_name: wizenda-backend
     env_file:
       - .env.example
@@ -19,13 +21,17 @@ services:
       - 'MONGO_INITDB_ROOT_USERNAME=root'
     networks:
       - mongo_network
+    ports:
+      - '27017'
   redis:
     image: redis:latest
+    ports:
+      - '6379'
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
     ports:
-      - "8081:8081"  # Expose mongo-express on localhost:8081
+      - '8081'  # Expose mongo-express on localhost:8081
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo  # MongoDB service name
       - ME_CONFIG_MONGODB_PORT=27017
