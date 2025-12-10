@@ -5,13 +5,21 @@ spring:
     virtual:
       enabled: true
   data:
-    mongodb:
-      host: ${DB_HOST}
-      port: ${DB_PORT}
-      database: ${DB_NAME}
-      username: ${DB_USER}
-      password: ${DB_PWD}
-      authentication-database: admin
+    redis:
+      url: redis://${REDIS_USER}:${REDIS_PWD}@${REDIS_HOST}:${REDIS_PORT}
+      #host: ${REDIS_HOST}
+      #port: ${REDIS_PORT}
+      #password: ${REDIS_PWD}
+      #username: ${REDIS_USER}
+  mongodb:
+    uri: ${DB_USER}:${DB_PWD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin&retryWrites=true&w=majority
+    #host: ${DB_HOST}
+    #port: ${DB_PORT}
+    #database: ${DB_NAME}
+    #username: ${DB_USER}
+    #password: ${DB_PWD}
+    #authentication-database: admin
+
 
 security:
   jwt:
@@ -19,10 +27,6 @@ security:
     secret-key: FSmFQ0tNPt79eHKSiuaxu0Kwtie6El27XyVCPwTvlFU
     token-expiry-time-in-seconds: 86400
     refresh-expiry-time-in-seconds: 259200
-
-logging:
-  level:
-    root: debug
 
 wiza:
   services:
