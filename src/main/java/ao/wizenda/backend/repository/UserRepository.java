@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends MongoRepository<@NonNull User, @NonNull String> {
   @Query("{ $or: [{ 'username': { $eq: ?0 } }, { 'email': { $eq: ?0 } }] }")
   @Nullable User findByUsernameOrEmail(@NonNull String usernameOrEmail);
+
+  boolean existsByUsername(@NonNull String username);
 }

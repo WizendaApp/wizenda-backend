@@ -30,6 +30,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/api/v1/auth/**"
         ).permitAll()
+        .requestMatchers("/error").permitAll()
+        .requestMatchers("/actuator/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
         .requestMatchers(HttpMethod.POST, "/api/v1/users/verify").permitAll()
         .anyRequest().authenticated();

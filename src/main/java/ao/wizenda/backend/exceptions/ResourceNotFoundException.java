@@ -2,6 +2,6 @@ package ao.wizenda.backend.exceptions;
 
 public class ResourceNotFoundException extends WizaException {
   public ResourceNotFoundException(String message) {
-    super("4004", message);
+    super("NOT_FOUND", message);
   }
 }

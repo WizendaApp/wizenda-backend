@@ -7,6 +7,7 @@ import ao.wizenda.backend.dto.VerifyUserRequest;
 import ao.wizenda.backend.events.SendNotificationEvent;
 import ao.wizenda.backend.events.UserCreatedEvent;
 import ao.wizenda.backend.exceptions.ResourceNotFoundException;
+import ao.wizenda.backend.exceptions.UserAlrightExistException;
 import ao.wizenda.backend.models.User;
 import ao.wizenda.backend.repository.UserRepository;
 import ao.wizenda.backend.repository.UserVerificationRepository;
@@ -44,6 +45,9 @@ public class UserServiceImpl implements UserService {
         .password(passwordEncoder.encode(request.password()))
         .build();
 
+    if (repository.existsByUsername(request.username())) {
+      throw new UserAlrightExistException(request.username());
+    }
 
     user = repository.save(user);
 
