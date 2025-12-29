@@ -1,6 +1,7 @@
 package ao.wizenda.backend.handlers;
 
 import ao.wizenda.backend.exceptions.WizaException;
+import ao.wizenda.backend.handlers.docs.GlobalExceptionHandlerDocs;
 import ao.wizenda.backend.handlers.models.ErrorData;
 import ao.wizenda.backend.handlers.models.ErrorData.ErrorDetails;
 import ao.wizenda.backend.utils.TranslationUtils;
@@ -18,8 +19,9 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler implements GlobalExceptionHandlerDocs {
   private final TranslationUtils translator;
+
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<@NonNull ErrorData> handleValidationException(MethodArgumentNotValidException e,

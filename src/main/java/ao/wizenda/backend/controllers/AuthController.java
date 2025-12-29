@@ -1,5 +1,6 @@
 package ao.wizenda.backend.controllers;
 
+import ao.wizenda.backend.controllers.docs.AuthControllerDocs;
 import ao.wizenda.backend.dto.*;
 import ao.wizenda.backend.services.AuthService;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
   private final AuthService service;
 
 

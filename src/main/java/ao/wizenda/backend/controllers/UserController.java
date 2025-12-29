@@ -2,6 +2,7 @@ package ao.wizenda.backend.controllers;
 
 import ao.wizenda.backend.controllers.docs.UserControllerDocs;
 import ao.wizenda.backend.dto.*;
+import ao.wizenda.backend.exceptions.ResourceNotFoundException;
 import ao.wizenda.backend.services.AuthService;
 import ao.wizenda.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -10,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import static java.util.Optional.ofNullable;
+import java.util.Optional;
 
 @RequestMapping("/api/v1/users")
 @RestController
@@ -31,8 +34,10 @@ public class UserController implements UserControllerDocs {
   @GetMapping("me")
   @SecurityRequirement(name = "Bearer Authentication")
   public ResponseEntity<@NonNull GetMeResponse> getCurrentUser() {
-    var username = (String) ofNullable(SecurityContextHolder.getContext().getAuthentication())
-        .orElseThrow().getPrincipal();
+    var username = (String) Optional.of(SecurityContextHolder.getContext())
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     if (username == null) {
       throw new IllegalStateException();
