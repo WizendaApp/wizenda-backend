@@ -14,6 +14,6 @@ public record CreateUserRequest(
     @NotNull String name,
     @NotNull @Pattern(regexp = "^9[1234579]\\d{7}$", message = "Invalid phone number") String phone,
     @NotNull @IsAdult LocalDate birthDate,
-    @NotNull @Pattern(regexp = "^(CLIENT|ADMIN|PARTNER)$", message = "Invalid user role") Role role,
+    @NotNull Role role,
     @NotNull @Size(min = 6, max = 36) String password) {
 }
